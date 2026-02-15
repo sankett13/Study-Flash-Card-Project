@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  password    String
+  decks       Deck[]   // ← NEW: One user has many decks
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Deck {
+  id            String   @id @default(cuid())
+  title         String
+  description   String?
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  cards         Card[]   // ← One deck has many cards
+  
+  // Stats
+  totalCards    Int      @default(0)
+  masteredCards Int      @default(0)
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model Card {
+  id           String   @id @default(cuid())
+  front        String
+  back         String
+  imageUrl     String?
+  imageKeyword String?
+  
+  deckId       String
+  deck         Deck     @relation(fields: [deckId], references: [id], onDelete: Cascade)
+  
+  // Spaced repetition
+  easeFactor   Float    @default(2.5)
+  interval     Int      @default(0)
+  nextReview   DateTime @default(now())
+  reviews      Int      @default(0)
+  
+  // Mastery
+  isMastered   Boolean  @default(false)
+  masteredAt   DateTime?
+  
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([deckId])
+  @@index([nextReview])
+}
