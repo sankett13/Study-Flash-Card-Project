@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { deckAPI } from "@/lib/decks.api";
-import { cardAPI } from "@/lib/cards.api";
-import { generateQuiz } from "@/lib/quiz.api";
+import { quizAPI } from "@/lib/quiz.api";
+import Loading from "@/components/shared/open/Loading";
 import Link from "next/link";
 
 interface QuizQuestion {
@@ -40,24 +40,23 @@ export default function QuizPage() {
 
   const fetchDeckAndGenerateQuiz = async () => {
     try {
-      const [deckRes, cardsRes] = await Promise.all([
-        deckAPI.getOne(deckId),
-        cardAPI.getByDeck(deckId),
-      ]);
-
+      // Fetch deck details
+      const deckRes = await deckAPI.getOne(deckId);
       setDeck(deckRes.data);
 
-      if (cardsRes.data.length === 0) {
+      // Generate quiz using LLM backend
+      const quiz = await quizAPI.generateQuiz(deckId);
+
+      if (quiz.length === 0) {
         alert("No cards in this deck to quiz on!");
         router.push(`/decks/${deckId}/edit`);
         return;
       }
 
-      const quiz = generateQuiz(cardsRes.data, 10);
       setQuestions(quiz);
     } catch (error) {
       console.error("Failed to generate quiz:", error);
-      alert("Failed to load quiz");
+      alert("Failed to load quiz. Please try again.");
       router.push("/dashboard");
     } finally {
       setLoading(false);
@@ -103,11 +102,8 @@ export default function QuizPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Generating quiz...</p>
-        </div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-50 via-white to-white">
+        <Loading message="Generating quiz..." size="lg" />
       </div>
     );
   }
@@ -117,9 +113,13 @@ export default function QuizPage() {
     const passed = percentage >= 70;
 
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center py-8">
-        <div className="max-w-2xl w-full px-4">
-          <div className="bg-white rounded-lg shadow-lg p-8 text-center">
+      <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-white relative overflow-hidden flex items-center justify-center py-8">
+        {/* Blue glow effects */}
+        <div className="pointer-events-none absolute -top-32 right-1/3 h-[400px] w-[400px] rounded-full bg-blue-400/20 blur-[120px]" />
+        <div className="pointer-events-none absolute bottom-1/4 -left-48 h-[400px] w-[400px] rounded-full bg-blue-400/15 blur-[140px]" />
+
+        <div className="max-w-2xl w-full px-4 relative z-10">
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 text-center border border-blue-100">
             {/* Result Icon */}
             <div className="text-6xl mb-4">{passed ? "🎉" : "📚"}</div>
 
@@ -154,7 +154,7 @@ export default function QuizPage() {
                     return (
                       <div
                         key={q.cardId}
-                        className="bg-red-50 border border-red-200 rounded-lg p-4"
+                        className="bg-red-50 border border-red-200 rounded-2xl p-4"
                       >
                         <p className="font-medium text-gray-900 mb-2">
                           {q.question}
@@ -173,22 +173,22 @@ export default function QuizPage() {
             )}
 
             {/* Actions */}
-            <div className="flex gap-3 justify-center">
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <button
                 onClick={handleRetake}
-                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium"
+                className="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-200 font-medium shadow-lg"
               >
                 Retake Quiz
               </button>
               <Link
                 href={`/decks/${deckId}/study`}
-                className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium"
+                className="px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl hover:from-green-700 hover:to-green-800 transition-all duration-200 font-medium shadow-lg"
               >
                 Study Flashcards
               </Link>
               <Link
                 href="/dashboard"
-                className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition font-medium"
+                className="px-6 py-3 bg-white/80 backdrop-blur-sm text-blue-700 rounded-xl hover:bg-blue-50 transition-all duration-200 font-medium border border-blue-200 shadow-lg"
               >
                 Dashboard
               </Link>
@@ -203,13 +203,17 @@ export default function QuizPage() {
   const progress = ((currentIndex + 1) / questions.length) * 100;
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-2xl mx-auto px-4">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-white relative overflow-hidden py-8">
+      {/* Blue glow effects */}
+      <div className="pointer-events-none absolute -top-32 left-1/3 h-[400px] w-[400px] rounded-full bg-blue-400/20 blur-[120px]" />
+      <div className="pointer-events-none absolute bottom-1/3 -right-48 h-[400px] w-[400px] rounded-full bg-blue-400/15 blur-[140px]" />
+
+      <div className="max-w-2xl mx-auto px-4 relative z-10">
         {/* Header */}
         <div className="mb-6">
           <Link
             href={`/decks/${deckId}/edit`}
-            className="text-blue-600 hover:underline inline-flex items-center gap-1 mb-4"
+            className="text-blue-600 hover:text-blue-800 hover:underline inline-flex items-center gap-1 mb-4 font-medium"
           >
             ← Back to Deck
           </Link>
@@ -220,7 +224,7 @@ export default function QuizPage() {
 
         {/* Progress */}
         <div className="mb-6">
-          <div className="flex justify-between text-sm text-gray-600 mb-2">
+          <div className="flex justify-between text-sm text-blue-600 font-medium mb-2">
             <span>
               Question {currentIndex + 1} of {questions.length}
             </span>
@@ -228,16 +232,16 @@ export default function QuizPage() {
               Score: {score}/{currentIndex + (showResult ? 1 : 0)}
             </span>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-2">
+          <div className="w-full bg-blue-100 rounded-full h-3 shadow-inner">
             <div
-              className="bg-blue-500 h-2 rounded-full transition-all"
+              className="bg-gradient-to-r from-blue-500 to-blue-700 h-3 rounded-full transition-all duration-300 ease-out shadow-sm"
               style={{ width: `${progress}%` }}
             />
           </div>
         </div>
 
         {/* Question */}
-        <div className="bg-white rounded-lg shadow-lg p-8 mb-6">
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 mb-6 border border-blue-100 hover:border-blue-200 transition-all duration-300">
           <h2 className="text-xl font-semibold text-gray-900 mb-6">
             {currentQuestion.question}
           </h2>
@@ -255,14 +259,14 @@ export default function QuizPage() {
                   key={index}
                   onClick={() => handleSelectAnswer(option)}
                   disabled={showResult}
-                  className={`w-full text-left p-4 rounded-lg border-2 transition ${
+                  className={`w-full text-left p-4 rounded-xl border-2 transition-all duration-300 transform hover:scale-102 ${
                     showCorrect
-                      ? "bg-green-100 border-green-500"
+                      ? "bg-green-50 border-green-500 shadow-lg"
                       : showWrong
-                        ? "bg-red-100 border-red-500"
+                        ? "bg-red-50 border-red-500 shadow-lg"
                         : isSelected
-                          ? "border-blue-500 bg-blue-50"
-                          : "border-gray-300 hover:border-blue-300 hover:bg-gray-50"
+                          ? "border-blue-500 bg-blue-50 shadow-md"
+                          : "border-blue-200 hover:border-blue-400 hover:bg-blue-50 hover:shadow-md"
                   } ${showResult ? "cursor-default" : "cursor-pointer"}`}
                 >
                   <div className="flex items-center justify-between">
@@ -285,7 +289,7 @@ export default function QuizPage() {
           <div className="text-center">
             <button
               onClick={handleNext}
-              className="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium text-lg"
+              className="px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-200 font-medium text-lg shadow-lg hover:shadow-xl transform hover:scale-105"
             >
               {currentIndex < questions.length - 1
                 ? "Next Question →"

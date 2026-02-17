@@ -56,29 +56,38 @@ export default function NewDeckPage() {
   const isContentValid = contentLength === 0 || contentLength >= 50;
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-3xl mx-auto px-4">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-white relative overflow-hidden py-8">
+      {/* Blue glow effects */}
+      <div className="pointer-events-none absolute -top-32 left-1/3 h-[400px] w-[400px] rounded-full bg-blue-400/20 blur-[120px]" />
+      <div className="pointer-events-none absolute bottom-1/3 -right-48 h-[400px] w-[400px] rounded-full bg-blue-400/15 blur-[140px]" />
+
+      <div className="max-w-3xl mx-auto px-4 relative z-10">
         {/* Header */}
         <div className="mb-8">
           <Link
             href="/dashboard"
-            className="text-blue-600 hover:underline inline-flex items-center gap-1 mb-4"
+            className="text-blue-600 hover:text-blue-800 hover:underline inline-flex items-center gap-1 mb-4 font-medium"
           >
             ← Back to Dashboard
           </Link>
-          <h1 className="text-3xl font-bold text-gray-900">Create New Deck</h1>
-          <p className="text-gray-600 mt-2">
-            Add your study material and let AI generate flashcards automatically
-          </p>
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-blue-100 p-6">
+            <h1 className="text-3xl font-bold text-gray-900">
+              Create New Deck
+            </h1>
+            <p className="text-gray-600 mt-2">
+              Add your study material and let AI generate flashcards
+              automatically
+            </p>
+          </div>
         </div>
 
         {/* Form */}
         <form
           onSubmit={handleSubmit}
-          className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 space-y-6"
+          className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-blue-100 p-8 space-y-6"
         >
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl shadow-sm">
               {error}
             </div>
           )}
@@ -87,7 +96,7 @@ export default function NewDeckPage() {
           <div>
             <label
               htmlFor="title"
-              className="block text-sm font-semibold text-gray-700 mb-2"
+              className="block text-sm font-medium text-blue-700 mb-2"
             >
               Deck Name <span className="text-red-500">*</span>
             </label>
@@ -98,7 +107,7 @@ export default function NewDeckPage() {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g., Biology Chapter 3: Cell Division"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+              className="w-full px-4 py-3 border border-blue-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 shadow-sm"
               disabled={loading}
             />
           </div>
@@ -107,10 +116,10 @@ export default function NewDeckPage() {
           <div>
             <label
               htmlFor="description"
-              className="block text-sm font-semibold text-gray-700 mb-2"
+              className="block text-sm font-medium text-blue-700 mb-2"
             >
               Description{" "}
-              <span className="text-gray-400 font-normal">(optional)</span>
+              <span className="text-blue-400 font-normal">(optional)</span>
             </label>
             <input
               id="description"
@@ -118,7 +127,7 @@ export default function NewDeckPage() {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="e.g., Covers mitosis, meiosis, and cell cycle"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+              className="w-full px-4 py-3 border border-blue-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 shadow-sm"
               disabled={loading}
             />
           </div>
@@ -127,10 +136,10 @@ export default function NewDeckPage() {
           <div>
             <label
               htmlFor="content"
-              className="block text-sm font-semibold text-gray-700 mb-2"
+              className="block text-sm font-medium text-blue-700 mb-2"
             >
               Study Material{" "}
-              <span className="text-gray-400 font-normal">
+              <span className="text-blue-400 font-normal">
                 (for AI generation)
               </span>
             </label>
@@ -144,7 +153,7 @@ AI will automatically generate flashcards covering key concepts, definitions, an
 
 Leave empty to create a blank deck and add cards manually later."
               rows={14}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono text-sm transition"
+              className="w-full px-4 py-3 border border-blue-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono text-sm transition-all duration-200 shadow-sm"
               disabled={loading}
             />
             <div className="mt-2 flex justify-between items-center text-sm">
@@ -172,7 +181,7 @@ Leave empty to create a blank deck and add cards manually later."
 
           {/* Info Box */}
           {contentLength >= 50 && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 shadow-sm">
               <div className="flex gap-3">
                 <span className="text-2xl">🤖</span>
                 <div>
@@ -192,7 +201,7 @@ Leave empty to create a blank deck and add cards manually later."
             <button
               type="submit"
               disabled={loading || !title.trim() || !isContentValid}
-              className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center justify-center gap-2"
+              className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl font-medium hover:from-blue-700 hover:to-blue-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-105"
             >
               {loading ? (
                 <>
@@ -209,7 +218,7 @@ Leave empty to create a blank deck and add cards manually later."
             </button>
             <Link
               href="/dashboard"
-              className="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg font-semibold hover:bg-gray-200 transition inline-flex items-center"
+              className="px-6 py-3 bg-white/80 backdrop-blur-sm text-blue-700 rounded-xl font-medium hover:bg-blue-50 transition-all duration-200 inline-flex items-center border border-blue-200 shadow-lg"
             >
               Cancel
             </Link>

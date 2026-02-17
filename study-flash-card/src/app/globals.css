@@ -23,7 +23,7 @@
   --font-poppins: 'Poppins', sans-serif;
   --font-source-serif-4: 'Source Serif 4', serif;
 
-  --primary-color: #6a2ef0;
+  --primary-color: #2563eb;
   --secondary-color: #ffffff;
   --light-primary: #e7daf6;
   --text-dark: #383737;
@@ -46,5 +46,6 @@ body {
 }
 
 .animate-fadeIn {
-  animation: fadeIn 0.3s ease-out;
+  animation: fadeIn 0.5s ease-out;
+
 }

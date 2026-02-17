@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { deckAPI } from "@/lib/decks.api";
 import { cardAPI } from "@/lib/cards.api";
+import Loading from "@/components/shared/open/Loading";
 import Link from "next/link";
 
 interface Card {
@@ -106,19 +107,20 @@ export default function StudyPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading study session...</p>
-        </div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-50 via-white to-white">
+        <Loading message="Loading study session..." size="lg" />
       </div>
     );
   }
 
   if (sessionComplete || cards.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center max-w-md px-4">
+      <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-white relative overflow-hidden flex items-center justify-center">
+        {/* Blue glow effects */}
+        <div className="pointer-events-none absolute -top-32 right-1/3 h-[400px] w-[400px] rounded-full bg-blue-400/20 blur-[120px]" />
+        <div className="pointer-events-none absolute bottom-1/4 -left-48 h-[400px] w-[400px] rounded-full bg-blue-400/15 blur-[140px]" />
+
+        <div className="text-center max-w-md px-4 relative z-10">
           <div className="text-6xl mb-4">🎉</div>
           <h2 className="text-3xl font-bold text-gray-900 mb-2">All Done!</h2>
           <p className="text-gray-600 mb-6">
@@ -129,13 +131,13 @@ export default function StudyPage() {
           <div className="flex gap-3 justify-center">
             <Link
               href={`/decks/${deckId}/edit`}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium"
+              className="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-200 font-medium shadow-lg"
             >
               View Deck
             </Link>
             <Link
               href="/dashboard"
-              className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition font-medium"
+              className="px-6 py-3 bg-white/80 backdrop-blur-sm text-blue-700 rounded-xl hover:bg-blue-50 transition-all duration-200 font-medium border border-blue-200 shadow-lg"
             >
               Dashboard
             </Link>
@@ -149,13 +151,17 @@ export default function StudyPage() {
   const progress = ((currentIndex + 1) / cards.length) * 100;
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-2xl mx-auto px-4">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-white relative overflow-hidden py-8">
+      {/* Blue glow effects */}
+      <div className="pointer-events-none absolute -top-32 left-1/3 h-[400px] w-[400px] rounded-full bg-blue-400/20 blur-[120px]" />
+      <div className="pointer-events-none absolute bottom-1/3 -right-48 h-[400px] w-[400px] rounded-full bg-blue-400/15 blur-[140px]" />
+
+      <div className="max-w-2xl mx-auto px-4 relative z-10">
         {/* Header */}
         <div className="mb-6">
           <Link
             href={`/decks/${deckId}/edit`}
-            className="text-blue-600 hover:underline inline-flex items-center gap-1 mb-4"
+            className="text-blue-600 hover:text-blue-800 hover:underline inline-flex items-center gap-1 mb-4 font-medium"
           >
             ← Back to Deck
           </Link>
@@ -164,15 +170,15 @@ export default function StudyPage() {
 
         {/* Progress Bar */}
         <div className="mb-6">
-          <div className="flex justify-between text-sm text-gray-600 mb-2">
+          <div className="flex justify-between text-sm text-blue-600 font-medium mb-2">
             <span>
               Card {currentIndex + 1} of {cards.length}
             </span>
             <span>{Math.round(progress)}%</span>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-2">
+          <div className="w-full bg-blue-100 rounded-full h-3 shadow-inner">
             <div
-              className="bg-blue-500 h-2 rounded-full transition-all"
+              className="bg-gradient-to-r from-blue-500 to-blue-700 h-3 rounded-full transition-all duration-300 ease-out shadow-sm"
               style={{ width: `${progress}%` }}
             />
           </div>
@@ -180,8 +186,8 @@ export default function StudyPage() {
 
         {/* Celebration Banner */}
         {showCelebration && (
-          <div className="mb-4 bg-green-100 border border-green-400 rounded-lg p-4 animate-bounce">
-            <p className="text-green-800 font-semibold text-center">
+          <div className="mb-4 bg-green-50 border border-green-200 rounded-2xl p-4 animate-bounce shadow-lg border-green-300">
+            <p className="text-green-700 font-semibold text-center">
               🎉 Card Mastered! You'll see this less often now.
             </p>
           </div>
@@ -189,13 +195,13 @@ export default function StudyPage() {
 
         {/* Flashcard */}
         <div
-          className="bg-white rounded-lg shadow-lg p-8 min-h-[400px] cursor-pointer relative border-2 border-gray-200 hover:border-blue-300 transition"
+          className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 min-h-[400px] cursor-pointer relative border-2 border-blue-100 hover:border-blue-300 hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
           onClick={() => setIsFlipped(!isFlipped)}
         >
           {/* Mastery Badge */}
           {currentCard.isMastered && (
             <div className="absolute top-4 right-4">
-              <span className="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full font-semibold">
+              <span className="bg-green-50 text-green-700 text-xs px-3 py-1.5 rounded-full font-semibold border border-green-200 shadow-sm">
                 ✓ Mastered
               </span>
             </div>
@@ -206,20 +212,20 @@ export default function StudyPage() {
             {!isFlipped ? (
               /* Front */
               <div>
-                <p className="text-sm text-gray-500 uppercase font-semibold mb-4">
+                <p className="text-sm text-blue-500 uppercase font-bold mb-4 tracking-wider">
                   Question
                 </p>
                 <h2 className="text-2xl font-semibold text-gray-900 mb-6">
                   {currentCard.front}
                 </h2>
-                <p className="text-sm text-gray-400 mt-8">
+                <p className="text-sm text-blue-400 mt-8">
                   Click or press Space to reveal answer
                 </p>
               </div>
             ) : (
               /* Back */
               <div>
-                <p className="text-sm text-gray-500 uppercase font-semibold mb-4">
+                <p className="text-sm text-blue-500 uppercase font-bold mb-4 tracking-wider">
                   Answer
                 </p>
                 <p className="text-xl text-gray-900 leading-relaxed">
@@ -232,56 +238,56 @@ export default function StudyPage() {
 
         {/* Rating Buttons */}
         {isFlipped && (
-          <div className="mt-6 grid grid-cols-4 gap-3">
+          <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-3">
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 handleRating(0);
               }}
-              className="bg-red-500 hover:bg-red-600 text-white py-4 px-4 rounded-lg font-semibold transition"
+              className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white py-4 px-4 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
             >
               <div className="text-lg">Again</div>
-              <div className="text-xs opacity-80">Forgot it</div>
-              <div className="text-xs opacity-60 mt-1">Press 1</div>
+              <div className="text-xs opacity-90">Forgot it</div>
+              <div className="text-xs opacity-70 mt-1">Press 1</div>
             </button>
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 handleRating(1);
               }}
-              className="bg-orange-500 hover:bg-orange-600 text-white py-4 px-4 rounded-lg font-semibold transition"
+              className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white py-4 px-4 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
             >
               <div className="text-lg">Hard</div>
-              <div className="text-xs opacity-80">Struggled</div>
-              <div className="text-xs opacity-60 mt-1">Press 2</div>
+              <div className="text-xs opacity-90">Struggled</div>
+              <div className="text-xs opacity-70 mt-1">Press 2</div>
             </button>
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 handleRating(2);
               }}
-              className="bg-green-500 hover:bg-green-600 text-white py-4 px-4 rounded-lg font-semibold transition"
+              className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white py-4 px-4 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
             >
               <div className="text-lg">Good</div>
-              <div className="text-xs opacity-80">Got it</div>
-              <div className="text-xs opacity-60 mt-1">Press 3</div>
+              <div className="text-xs opacity-90">Got it</div>
+              <div className="text-xs opacity-70 mt-1">Press 3</div>
             </button>
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 handleRating(3);
               }}
-              className="bg-blue-500 hover:bg-blue-600 text-white py-4 px-4 rounded-lg font-semibold transition"
+              className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white py-4 px-4 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
             >
               <div className="text-lg">Easy</div>
-              <div className="text-xs opacity-80">Too easy!</div>
-              <div className="text-xs opacity-60 mt-1">Press 4</div>
+              <div className="text-xs opacity-90">Too easy!</div>
+              <div className="text-xs opacity-70 mt-1">Press 4</div>
             </button>
           </div>
         )}
 
         {/* Keyboard Hint */}
-        <p className="text-center text-sm text-gray-400 mt-4">
+        <p className="text-center text-sm text-blue-400 mt-4 font-medium">
           {!isFlipped
             ? "Press Space to flip card"
             : "Press 1-4 to rate your recall"}

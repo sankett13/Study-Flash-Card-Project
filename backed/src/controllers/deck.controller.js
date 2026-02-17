@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { generateQuiz } from "../lib/llm.js";
 
 const prisma = new PrismaClient();
 
@@ -141,5 +142,34 @@ export const deleteDeck = async (req, res) => {
   } catch (error) {
     console.error("Delete deck error:", error);
     res.status(500).json({ error: "Failed to delete deck" });
+  }
+};
+
+// Generate quiz for a deck
+export const generateQuizForDeck = async (req, res) => {
+  try {
+    // Fetch the deck with its cards
+    const deck = await prisma.deck.findFirst({
+      where: {
+        id: req.params.id,
+        userId: req.user.userId,
+      },
+      include: {
+        cards: true,
+      },
+    });
+
+    if (!deck) {
+      return res.status(404).json({ error: "Deck not found" });
+    }
+
+    // Generate quiz using LLM
+    const quiz = await generateQuiz(deck);
+    console.log("Generated quiz:", quiz);
+
+    res.json({ quiz });
+  } catch (error) {
+    console.error("Generate quiz error:", error);
+    res.status(500).json({ error: "Failed to generate quiz" });
   }
 };

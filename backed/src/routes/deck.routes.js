@@ -6,6 +6,7 @@ import {
   createDeck,
   updateDeck,
   deleteDeck,
+  generateQuizForDeck,
 } from "../controllers/deck.controller.js";
 
 const router = express.Router();
@@ -21,6 +22,8 @@ router.get("/:id", getDeck);
 
 // POST /api/decks - Create new deck
 router.post("/", createDeck);
+
+router.post("/:id/quiz", generateQuizForDeck);
 
 // PUT /api/decks/:id - Update deck
 router.put("/:id", updateDeck);

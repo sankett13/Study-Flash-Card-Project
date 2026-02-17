@@ -42,24 +42,27 @@ export default function FAQ() {
   };
 
   return (
-    <section className="py-20 bg-gray-50">
+    <section className="relative overflow-hidden bg-white py-16 sm:py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
-          {/* Left Side - Heading and Description */}
-          <div className="lg:sticky lg:top-8">
-            <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+          {/* Left Side */}
+          <div className="lg:sticky lg:top-24">
+            <h2 className="font-bold tracking-tight text-gray-900 leading-tight
+              text-3xl sm:text-4xl md:text-5xl mb-6">
               Any questions?
               <br />
               We got you.
             </h2>
-            <p className="text-lg text-gray-600 leading-relaxed mb-8 max-w-md">
-              Yet bed any for assistance indulgence unpleasing. Not thoughts all
-              exercise blessing. Indulgence way everything joy alteration
-              boisterous the attachment.
+
+            <p className="text-gray-600 leading-relaxed max-w-md mb-8
+              text-sm sm:text-base md:text-lg">
+              Everything you need to know about how Flashcards works, pricing,
+              and getting started.
             </p>
+
             <a
               href="#"
-              className="inline-flex items-center text-pink-600 font-semibold hover:text-pink-700 transition-colors group"
+              className="inline-flex items-center text-primary font-semibold hover:opacity-80 transition group"
             >
               More FAQs
               <svg
@@ -78,26 +81,39 @@ export default function FAQ() {
             </a>
           </div>
 
-          {/* Right Side - FAQ Accordion */}
+          {/* Right Side - Accordion */}
           <div className="space-y-4">
             {faqData.map((faq, index) => (
-              <div key={index} className="border-b border-gray-200 pb-4">
+              <div
+                key={index}
+                className="rounded-2xl border border-blue-100 bg-white p-5 transition-shadow hover:shadow-sm"
+              >
                 <button
                   onClick={() => toggleFAQ(index)}
                   className="w-full flex items-start justify-between text-left group"
                 >
-                  <span className="text-lg font-semibold text-gray-900 pr-8 group-hover:text-pink-600 transition-colors">
+                  <span className="font-semibold text-gray-900 pr-6
+                    text-base sm:text-lg group-hover:text-primary transition-colors">
                     {faq.question}
                   </span>
-                  <span className="shrink-0 text-gray-400 text-2xl font-light">
+                  <span className="shrink-0 text-2xl text-gray-400 leading-none">
                     {openIndex === index ? "−" : "+"}
                   </span>
                 </button>
-                {openIndex === index && (
-                  <div className="mt-4 text-gray-600 leading-relaxed pr-8 animate-fadeIn">
-                    {faq.answer}
+
+                <div
+                  className={`grid transition-all duration-300 ease-out ${
+                    openIndex === index
+                      ? "grid-rows-[1fr] opacity-100 mt-4"
+                      : "grid-rows-[0fr] opacity-0"
+                  }`}
+                >
+                  <div className="overflow-hidden">
+                    <p className="text-gray-600 leading-relaxed text-sm sm:text-base pr-4">
+                      {faq.answer}
+                    </p>
                   </div>
-                )}
+                </div>
               </div>
             ))}
           </div>
