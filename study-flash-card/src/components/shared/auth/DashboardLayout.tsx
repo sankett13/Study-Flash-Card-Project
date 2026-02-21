@@ -13,12 +13,12 @@ export default function DashboardLayout() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-sm border-b border-blue-100 shadow-lg">
+    <header className="fixed top-0 left-0 right-0 z-50 w-full bg-white/80 backdrop-blur-sm border-b border-blue-100 shadow-lg">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* Logo Section */}
         <div className="flex items-center gap-8">
           <Link href="/dashboard" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg shadow-sm"></div>
+            <div className="w-8 h-8 bg-gradient-to-b from-blue-700 to-blue-400 rounded-lg shadow-sm"></div>
             <span className="font-poppins text-gray-900 tracking-tight font-bold text-xl">
               StudyFlash
             </span>

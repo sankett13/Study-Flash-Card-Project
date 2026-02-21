@@ -220,7 +220,7 @@ export default function EditDeckPage() {
               </p>
               <button
                 onClick={() => setShowAddCard(true)}
-                className="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-200 font-medium shadow-lg"
+                className="px-6 py-3 bg-gradient-to-b from-blue-700 to-blue-400 text-white rounded-xl hover:from-blue-800 hover:to-blue-600 transition-all duration-200 font-medium shadow-lg"
               >
                 + Add First Card
               </button>
@@ -261,7 +261,7 @@ export default function EditDeckPage() {
                       <div className="flex gap-2">
                         <button
                           onClick={() => handleSaveEdit(card.id)}
-                          className="px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-200 text-sm font-medium shadow-lg"
+                          className="px-4 py-2 bg-gradient-to-b from-blue-700 to-blue-400 text-white rounded-xl hover:from-blue-800 hover:to-blue-600 transition-all duration-200 text-sm font-medium shadow-lg"
                         >
                           Save
                         </button>
@@ -374,7 +374,7 @@ export default function EditDeckPage() {
                   <button
                     onClick={handleAddCard}
                     disabled={!newFront.trim() || !newBack.trim()}
-                    className="px-6 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-200 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+                    className="px-6 py-2 bg-gradient-to-b from-blue-700 to-blue-400 text-white rounded-xl hover:from-blue-800 hover:to-blue-600 transition-all duration-200 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
                   >
                     Add Card
                   </button>

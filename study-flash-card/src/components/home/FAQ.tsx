@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const faqData = [
   {
@@ -42,20 +43,33 @@ export default function FAQ() {
   };
 
   return (
-    <section className="relative overflow-hidden bg-white py-16 sm:py-20">
+    <section
+      id="faq"
+      className="relative overflow-hidden bg-white py-16 sm:py-20"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
           {/* Left Side */}
-          <div className="lg:sticky lg:top-24">
-            <h2 className="font-bold tracking-tight text-gray-900 leading-tight
-              text-3xl sm:text-4xl md:text-5xl mb-6">
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="lg:sticky lg:top-24"
+          >
+            <h2
+              className="font-bold tracking-tight text-gray-900 leading-tight
+              text-3xl sm:text-4xl md:text-5xl mb-6"
+            >
               Any questions?
               <br />
               We got you.
             </h2>
 
-            <p className="text-gray-600 leading-relaxed max-w-md mb-8
-              text-sm sm:text-base md:text-lg">
+            <p
+              className="text-gray-600 leading-relaxed max-w-md mb-8
+              text-sm sm:text-base md:text-lg"
+            >
               Everything you need to know about how Flashcards works, pricing,
               and getting started.
             </p>
@@ -79,42 +93,56 @@ export default function FAQ() {
                 />
               </svg>
             </a>
-          </div>
+          </motion.div>
 
           {/* Right Side - Accordion */}
           <div className="space-y-4">
             {faqData.map((faq, index) => (
-              <div
+              <motion.div
                 key={index}
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: index * 0.1 }}
                 className="rounded-2xl border border-blue-100 bg-white p-5 transition-shadow hover:shadow-sm"
               >
                 <button
                   onClick={() => toggleFAQ(index)}
                   className="w-full flex items-start justify-between text-left group"
                 >
-                  <span className="font-semibold text-gray-900 pr-6
-                    text-base sm:text-lg group-hover:text-primary transition-colors">
+                  <span
+                    className="font-semibold text-gray-900 pr-6
+                    text-base sm:text-lg group-hover:text-primary transition-colors"
+                  >
                     {faq.question}
                   </span>
-                  <span className="shrink-0 text-2xl text-gray-400 leading-none">
+                  <motion.span
+                    animate={{ rotate: openIndex === index ? 180 : 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="shrink-0 text-2xl text-gray-400 leading-none"
+                  >
                     {openIndex === index ? "−" : "+"}
-                  </span>
+                  </motion.span>
                 </button>
 
-                <div
-                  className={`grid transition-all duration-300 ease-out ${
-                    openIndex === index
-                      ? "grid-rows-[1fr] opacity-100 mt-4"
-                      : "grid-rows-[0fr] opacity-0"
-                  }`}
-                >
-                  <div className="overflow-hidden">
-                    <p className="text-gray-600 leading-relaxed text-sm sm:text-base pr-4">
-                      {faq.answer}
-                    </p>
-                  </div>
-                </div>
-              </div>
+                <AnimatePresence>
+                  {openIndex === index && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3, ease: "easeInOut" }}
+                      className="overflow-hidden"
+                    >
+                      <div className="pt-4">
+                        <p className="text-gray-600 leading-relaxed text-sm sm:text-base pr-4">
+                          {faq.answer}
+                        </p>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
             ))}
           </div>
         </div>

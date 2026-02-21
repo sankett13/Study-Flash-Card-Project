@@ -131,7 +131,7 @@ export default function StudyPage() {
           <div className="flex gap-3 justify-center">
             <Link
               href={`/decks/${deckId}/edit`}
-              className="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-200 font-medium shadow-lg"
+              className="px-6 py-3 bg-gradient-to-b from-blue-700 to-blue-400 text-white rounded-xl hover:from-blue-800 hover:to-blue-600 transition-all duration-200 font-medium shadow-lg"
             >
               View Deck
             </Link>
@@ -178,7 +178,7 @@ export default function StudyPage() {
           </div>
           <div className="w-full bg-blue-100 rounded-full h-3 shadow-inner">
             <div
-              className="bg-gradient-to-r from-blue-500 to-blue-700 h-3 rounded-full transition-all duration-300 ease-out shadow-sm"
+              className="bg-gradient-to-r from-blue-700 to-blue-400 h-3 rounded-full transition-all duration-300 ease-out shadow-sm"
               style={{ width: `${progress}%` }}
             />
           </div>

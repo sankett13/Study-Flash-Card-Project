@@ -201,7 +201,7 @@ Leave empty to create a blank deck and add cards manually later."
             <button
               type="submit"
               disabled={loading || !title.trim() || !isContentValid}
-              className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl font-medium hover:from-blue-700 hover:to-blue-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-105"
+              className="flex-1 px-6 py-3 bg-gradient-to-b from-blue-700 to-blue-400 text-white rounded-xl font-medium hover:from-blue-800 hover:to-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-105"
             >
               {loading ? (
                 <>

@@ -39,14 +39,21 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      router.push("/login");
+      return;
+    }
     loadUser();
-  }, [loadUser]);
+  }, [loadUser, router]);
 
   useEffect(() => {
-    if (!user && !localStorage.getItem("authToken")) {
+    // Redirect to login if no user after loading attempt
+    const token = localStorage.getItem("authToken");
+    if (!loading && !user && !token) {
       router.push("/login");
     }
-  }, [user, router]);
+  }, [user, loading, router]);
 
   useEffect(() => {
     if (user) {
@@ -117,7 +124,7 @@ export default function DashboardPage() {
 
       <DashboardLayout />
 
-      <main className="flex-1 p-10 overflow-y-auto relative z-10">
+      <main className="flex-1 p-10 pt-24 overflow-y-auto relative z-10">
         <div className="max-w-7xl mx-auto">
           <header className="flex justify-between items-center mb-10">
             <div>
@@ -130,10 +137,7 @@ export default function DashboardPage() {
 
           {loading ? (
             <div className="flex flex-col items-center justify-center py-20">
-              <Loading
-                message="Loading your dashboard..."
-                size="md"
-              />
+              <Loading message="Loading your dashboard..." size="md" />
             </div>
           ) : decks.length === 0 ? (
             <div className="bg-white rounded-3xl p-12 text-center shadow-sm border border-gray-100">
@@ -206,9 +210,9 @@ export default function DashboardPage() {
                   </div>
 
                   {/* Daily Streak */}
-                  <div className="bg-gradient-to-br from-blue-600 to-blue-800 p-6 rounded-3xl shadow-xl border border-blue-500 flex flex-col justify-between text-white">
+                  <div className="bg-gradient-to-b from-blue-700 to-blue-400 p-6 rounded-3xl shadow-xl border-0 flex flex-col justify-between text-white">
                     <div>
-                      <span className="text-[10px] font-bold text-blue-200 uppercase tracking-widest mb-1 block">
+                      <span className="text-[10px] font-bold text-blue-100 uppercase tracking-widest mb-1 block">
                         Daily Streak
                       </span>
                       <div className="flex items-center gap-2">
@@ -295,7 +299,7 @@ export default function DashboardPage() {
                                 {deck.totalCards}
                               </span>
                             </div>
-                            <div className="w-px h-3 bg-blue-100"></div>
+                            <div className="w-px h-3 bg-blue-300"></div>
                             <div className="flex items-center gap-1.5">
                               <span className="text-[10px] font-bold text-blue-400 uppercase tracking-wider">
                                 Due
@@ -306,11 +310,22 @@ export default function DashboardPage() {
                                 {deck.dueToday}
                               </span>
                             </div>
+                            <div className="w-px h-3 bg-blue-300"></div>
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-[10px] font-bold text-blue-400 uppercase tracking-wider">
+                                Mastered
+                              </span>
+                              <span
+                                className={`text-xs font-bold ${deck.masteredCards > 0 ? "text-green-600" : "text-gray-900"}`}
+                              >
+                                {deck.masteredCards}
+                              </span>
+                            </div>
                           </div>
 
                           <div className="w-full bg-blue-50 h-0.5 rounded-full mb-6 overflow-hidden">
                             <div
-                              className="bg-gradient-to-r from-blue-500 to-blue-700 h-full rounded-full transition-all duration-500"
+                              className="bg-gradient-to-r from-blue-700 to-blue-400 h-full rounded-full transition-all duration-500"
                               style={{
                                 width: `${deck.totalCards > 0 ? (deck.masteredCards / deck.totalCards) * 100 : 0}%`,
                               }}
@@ -319,24 +334,40 @@ export default function DashboardPage() {
                         </div>
 
                         <div className="flex gap-2">
-                          <Link
-                            href={`/decks/${deck.id}/study`}
-                            className="flex-1 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-[10px] font-bold uppercase tracking-widest rounded-xl text-center hover:from-blue-700 hover:to-blue-800 transition-all duration-200"
-                          >
-                            Study
-                          </Link>
-                          <Link
-                            href={`/decks/${deck.id}/edit`}
-                            className="flex-1 py-2.5 bg-blue-50 text-blue-700 text-[10px] font-bold uppercase tracking-widest rounded-xl text-center hover:bg-blue-100 transition-colors border border-blue-200"
-                          >
-                            View/Edit
-                          </Link>
-                          <Link
-                            href={`/decks/${deck.id}/quiz`}
-                            className="flex-1 py-2.5 bg-blue-50 text-blue-700 text-[10px] font-bold uppercase tracking-widest rounded-xl text-center hover:bg-blue-100 transition-colors border border-blue-200"
-                          >
-                            Quiz
-                          </Link>
+                          {deck.masteredCards === deck.totalCards ? (
+                            <div className="flex items-center gap-3 w-full">
+                              <p className="flex-1 text-green-600 text-[10px] font-bold uppercase tracking-widest leading-none">
+                                All Cards Mastered
+                              </p>
+                              <Link
+                                href={`/decks/${deck.id}/quiz`}
+                                className="flex-1 py-2.5 bg-blue-50 text-blue-700 text-[10px] font-bold uppercase tracking-widest rounded-xl text-center hover:bg-blue-100 transition-colors border border-blue-200"
+                              >
+                                Quiz
+                              </Link>
+                            </div>
+                          ) : (
+                            <>
+                              <Link
+                                href={`/decks/${deck.id}/study`}
+                                className="flex-1 py-2.5 bg-gradient-to-b from-blue-700 to-blue-400 text-white text-[10px] font-bold uppercase tracking-widest rounded-xl text-center hover:from-blue-800 hover:to-blue-600 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95"
+                              >
+                                Study
+                              </Link>
+                              <Link
+                                href={`/decks/${deck.id}/edit`}
+                                className="flex-1 py-2.5 bg-blue-50 text-blue-700 text-[10px] font-bold uppercase tracking-widest rounded-xl text-center hover:bg-blue-100 transition-colors border border-blue-200"
+                              >
+                                View/Edit
+                              </Link>
+                              <Link
+                                href={`/decks/${deck.id}/quiz`}
+                                className="flex-1 py-2.5 bg-blue-50 text-blue-700 text-[10px] font-bold uppercase tracking-widest rounded-xl text-center hover:bg-blue-100 transition-colors border border-blue-200"
+                              >
+                                Quiz
+                              </Link>
+                            </>
+                          )}
                         </div>
                       </div>
                     ))}
@@ -375,8 +406,8 @@ export default function DashboardPage() {
                             x2="100%"
                             y2="100%"
                           >
-                            <stop offset="0%" stopColor="#3B82F6" />
-                            <stop offset="100%" stopColor="#1D4ED8" />
+                            <stop offset="0%" stopColor="#1d4ed8" />
+                            <stop offset="100%" stopColor="#60a5fa" />
                           </linearGradient>
                         </defs>
                         <circle

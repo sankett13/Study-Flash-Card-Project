@@ -176,13 +176,13 @@ export default function QuizPage() {
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <button
                 onClick={handleRetake}
-                className="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-200 font-medium shadow-lg"
+                className="px-6 py-3 bg-gradient-to-b from-blue-700 to-blue-400 text-white rounded-xl hover:from-blue-800 hover:to-blue-600 transition-all duration-200 font-medium shadow-lg"
               >
                 Retake Quiz
               </button>
               <Link
                 href={`/decks/${deckId}/study`}
-                className="px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl hover:from-green-700 hover:to-green-800 transition-all duration-200 font-medium shadow-lg"
+                className="px-6 py-3 bg-gradient-to-b from-green-600 to-green-400 text-white rounded-xl hover:from-green-700 hover:to-green-500 transition-all duration-200 font-medium shadow-lg"
               >
                 Study Flashcards
               </Link>
@@ -234,7 +234,7 @@ export default function QuizPage() {
           </div>
           <div className="w-full bg-blue-100 rounded-full h-3 shadow-inner">
             <div
-              className="bg-gradient-to-r from-blue-500 to-blue-700 h-3 rounded-full transition-all duration-300 ease-out shadow-sm"
+              className="bg-gradient-to-r from-blue-700 to-blue-400 h-3 rounded-full transition-all duration-300 ease-out shadow-sm"
               style={{ width: `${progress}%` }}
             />
           </div>
@@ -289,7 +289,7 @@ export default function QuizPage() {
           <div className="text-center">
             <button
               onClick={handleNext}
-              className="px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-200 font-medium text-lg shadow-lg hover:shadow-xl transform hover:scale-105"
+              className="px-8 py-3 bg-gradient-to-b from-blue-700 to-blue-400 text-white rounded-xl hover:from-blue-800 hover:to-blue-600 transition-all duration-200 font-medium text-lg shadow-lg hover:shadow-xl transform hover:scale-105"
             >
               {currentIndex < questions.length - 1
                 ? "Next Question →"

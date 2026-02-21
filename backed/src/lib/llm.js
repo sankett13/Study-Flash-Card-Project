@@ -1,4 +1,5 @@
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+import { ChatGroq } from "@langchain/groq";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { StructuredOutputParser } from "@langchain/core/output_parsers";
 import { z } from "zod";
@@ -38,6 +39,15 @@ const model = new ChatGoogleGenerativeAI({
   apiKey: process.env.GEMINI_API_KEY,
   model: "gemini-2.5-flash", // Latest Flash model
   temperature: 0.7, // Balance between creativity and consistency
+});
+
+//Initialize Groq model for quiz generation
+const groqModel = new ChatGroq({
+  apiKey: process.env.GROQ_API_KEY,
+  model: "llama-3.3-70b-versatile",
+  temperature: 0,
+  maxTokens: undefined,
+  maxRetries: 2,
 });
 
 // Create prompt template
@@ -129,12 +139,13 @@ Instructions:
 - Make questions clear and test understanding of the material
 - Vary the question types: direct recall, application, comparison, etc.
 - Do not include any questions that cannot be answered directly from the flashcards
-- Jumble the order of questions and correct answers to avoid patterns [e.g., don't always make option A the correct answer]
+- Jumble the order of questions and correct answers to avoid patterns
 
 ${formatInstructions}
 `;
 
-    const response = await model.invoke(prompt);
+    const response = await groqModel.invoke(prompt);
+    console.log("Using Groq model");
 
     // Parse the structured response
     const quiz = await quizParser.parse(response.content);

@@ -49,13 +49,23 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
 
   loadUser: async () => {
+    // Check if token exists first
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      set({ user: null, token: null, loading: false, error: null });
+      return;
+    }
+
     set({ loading: true, error: null });
     try {
       const data = await authApi.getMe();
       console.log("User data loaded:", data);
-      set({ user: data, loading: false });
-    } catch (error) {
-      set({ error: "Failed to load user", loading: false });
+      set({ user: data, token, loading: false });
+    } catch (error: any) {
+      // Clear auth state on failure
+      localStorage.removeItem("authToken");
+      set({ user: null, token: null, loading: false, error: null });
+      console.log("Authentication failed, cleared auth state");
     }
   },
 }));

@@ -34,8 +34,18 @@ api.interceptors.response.use(
     if (error.response) {
       // Handle specific status codes
       if (error.response.status === 401) {
-        // Unauthorized, redirect to login or refresh token
-        console.error("Unauthorized access - perhaps redirect to login?");
+        // Clear invalid token and redirect to login
+        localStorage.removeItem("authToken");
+        console.error("Unauthorized access - redirecting to login");
+
+        // Only redirect if we're not already on login/signup pages
+        const currentPath = window.location.pathname;
+        if (
+          !currentPath.includes("/login") &&
+          !currentPath.includes("/signup")
+        ) {
+          window.location.href = "/login";
+        }
       } else if (error.response.status === 500) {
         console.error("Server error - please try again later.");
       }

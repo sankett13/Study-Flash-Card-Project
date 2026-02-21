@@ -38,7 +38,7 @@ export default function Loading({
         {[0, 1, 2].map((i) => (
           <div
             key={i}
-            className={`${config.dot} bg-blue-600 rounded-full animate-bounce`}
+            className={`${config.dot} bg-blue-700 rounded-full animate-bounce`}
             style={{
               animationDelay: `${i * 0.1}s`,
               animationDuration: "0.6s",
