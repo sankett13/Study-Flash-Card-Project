@@ -147,7 +147,7 @@ backed/
 │   │   ├── auth.routes.js          # POST /api/auth/register, /login, GET /me
 │   │   ├── deck.routes.js          # CRUD /api/decks
 │   │   ├── card.routes.js          # CRUD /api/cards + POST /rate
-│   │   └── llm.routes.js           # POST /api/ai/generate, /quiz
+│   │   └── llm.routes.js           # POST /apierate, /quiz
 │   │
 │   ├── controllers/                # Business logic for each route
 │   │   ├── auth.controller.js      # Register, login, get current user

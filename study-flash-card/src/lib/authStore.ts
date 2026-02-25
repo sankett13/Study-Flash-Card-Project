@@ -4,6 +4,10 @@ import authApi from "./auth.api";
 interface User {
   id: string;
   email: string;
+  firstName?: string;
+  lastName?: string;
+  avatar?: string;
+  provider?: string;
 }
 
 interface AuthState {
@@ -49,7 +53,6 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
 
   loadUser: async () => {
-    // Check if token exists first
     const token = localStorage.getItem("authToken");
     if (!token) {
       set({ user: null, token: null, loading: false, error: null });
