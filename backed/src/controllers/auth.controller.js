@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { PrismaClient } from "@prisma/client";
 import { authenticateToken } from "../middleware/auth.middleware.js";
+import passport from "../lib/passport.js";
 
 const prisma = new PrismaClient();
 
@@ -114,6 +115,10 @@ export const getMe = async (req, res) => {
       select: {
         id: true,
         email: true,
+        firstName: true,
+        lastName: true,
+        avatar: true,
+        provider: true,
         createdAt: true,
       },
     });
@@ -121,5 +126,33 @@ export const getMe = async (req, res) => {
     res.json(user);
   } catch (error) {
     res.status(500).json({ error: "Server error" });
+  }
+};
+
+export const googleAuth = passport.authenticate("google", {
+  scope: ["profile", "email"],
+});
+
+export const googleCallback = async (req, res) => {
+  try {
+    if (!req.user) {
+      return res.redirect(
+        `${process.env.FRONTEND_URL}/login?error=oauth_failed`,
+      );
+    }
+
+    const token = jwt.sign(
+      {
+        userId: req.user.id,
+        email: req.user.email,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" },
+    );
+
+    res.redirect(`${process.env.FRONTEND_URL}/auth/callback?token=${token}`);
+  } catch (error) {
+    console.error("Google OAuth callback error:", error);
+    res.redirect(`${process.env.FRONTEND_URL}/login?error=oauth_failed`);
   }
 };

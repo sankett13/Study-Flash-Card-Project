@@ -10,10 +10,17 @@ datasource db {
 model User {
   id          String   @id @default(cuid())
   email       String   @unique
-  password    String
-  decks       Deck[]   // ← NEW: One user has many decks
+  password    String?  // ← Made optional for OAuth users
+  googleId    String?  // ← NEW: Google OAuth ID
+  provider    String   @default("local") // ← NEW: 'local' or 'google'
+  firstName   String?  // ← NEW: First name from Google
+  lastName    String?  // ← NEW: Last name from Google
+  avatar      String?  // ← NEW: Profile picture URL
+  decks       Deck[]   // ← One user has many decks
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  @@unique([googleId])
 }
 
 model Deck {

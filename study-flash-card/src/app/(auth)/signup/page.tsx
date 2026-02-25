@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "../../../lib/authStore";
 import Link from "next/link";
+import GoogleAuthButton from "@/components/shared/auth/GoogleAuthButton";
 
 export default function SignupPage() {
   const [email, setEmail] = useState("");
@@ -101,6 +102,19 @@ export default function SignupPage() {
           >
             {loading ? "Creating account..." : "Sign up"}
           </button>
+
+          {/* Divider */}
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300" />
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="bg-white px-4 text-gray-500">or</span>
+            </div>
+          </div>
+
+          {/* Google OAuth */}
+          <GoogleAuthButton text="Sign up with Google" disabled={loading} />
 
           {/* Login link */}
           <div className="text-center text-sm">

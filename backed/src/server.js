@@ -1,12 +1,14 @@
 import express, { json, urlencoded } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import session from "express-session";
 import authRoutes from "./routes/auth.routes.js";
 import deckRoutes from "./routes/deck.routes.js";
 import llmRoutes from "./routes/llm.routes.js";
 import cardRoutes from "./routes/card.routes.js";
 import { sendEmail } from "./lib/sendEmail.js";
 import { success } from "zod";
+import passport from "./lib/passport.js";
 
 //Loading dotenv
 dotenv.config();
@@ -23,6 +25,25 @@ app.use(
 );
 app.use(express.json());
 app.use(urlencoded({ extended: true }));
+
+// Session middleware (required for Passport)
+app.use(
+  session({
+    secret:
+      process.env.SESSION_SECRET || process.env.JWT_SECRET || "fallback-secret",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: false, // Set to true in production with HTTPS
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    },
+  }),
+);
+
+// Passport middleware
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Routes
 app.use("/api/auth", authRoutes);
