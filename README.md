@@ -227,7 +227,7 @@ npx prisma db push
 npm run dev
 ```
 
-The backend will start at **`http://localhost:8080`** (or the PORT in your `.env`).
+The backend will start at **`http://localhost:4000`** (or the PORT in your `.env`).
 
 ---
 
@@ -242,7 +242,7 @@ npm install
 
 # 3. Create your environment file
 cp .env.local.example .env.local
-# Set NEXT_PUBLIC_API_URL=http://localhost:8080
+# Set NEXT_PUBLIC_API_URL=http://localhost:4000/api
 
 # 4. Start the development server
 npm run dev
@@ -258,16 +258,27 @@ The frontend will start at **`http://localhost:3000`**.
 
 ```env
 # Server
-PORT=8080
+PORT=4000
+
+# Frontend URL (for OAuth redirects)
+FRONTEND_URL=http://localhost:3000
 
 # Database
 DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE"
 
 # Authentication
 JWT_SECRET="your-super-secret-jwt-key"
+SESSION_SECRET="your-super-secret-session-key"
+
+# Google OAuth 2.0
+GOOGLE_CLIENT_ID="your-google-client-id"
+GOOGLE_CLIENT_SECRET="your-google-client-secret"
 
 # Google Gemini AI
 GEMINI_API_KEY="your-google-gemini-api-key"
+
+# For Quiz Generation
+GROQ_API_KEY="your-groq-api-key"
 
 # Resend (Email)
 RESEND_API_KEY="your-resend-api-key"
@@ -276,22 +287,48 @@ RESEND_API_KEY="your-resend-api-key"
 ### Frontend (`study-flash-card/.env.local`)
 
 ```env
-NEXT_PUBLIC_API_URL=http://localhost:8080
+NEXT_PUBLIC_API_URL=http://localhost:4000/api
 ```
 
 ---
 
-## 📡 API Reference
+## � Google OAuth Setup
+
+> For detailed setup instructions, see [`GOOGLE_OAUTH_SETUP.md`](GOOGLE_OAUTH_SETUP.md)
+
+**Quick Setup:**
+
+1. **Google Cloud Console**: Create a new project or use existing one
+2. **Enable Google+ API**: In APIs & Services dashboard
+3. **Create OAuth 2.0 Credentials**:
+   - Application type: "Web application"
+   - Authorized origins: `http://localhost:4000`
+   - Authorized redirect URIs: `http://localhost:4000/api/auth/google/callback`
+4. **Update Environment Variables**: Add your `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`
+5. **Test OAuth Flow**: Click "Continue with Google" on login/signup pages
+
+**OAuth Features:**
+
+- ✅ New user registration with Google account
+- ✅ Existing user account linking
+- ✅ Seamless JWT token generation
+- ✅ Profile data synchronization (name, email, avatar)
+
+---
+
+## �📡 API Reference
 
 All backend routes are prefixed with `/api`.
 
 ### Authentication — `/api/auth`
 
-| Method | Endpoint         | Description           | Auth |
-| ------ | ---------------- | --------------------- | ---- |
-| `POST` | `/auth/register` | Create a new account  | ❌   |
-| `POST` | `/auth/login`    | Login and receive JWT | ❌   |
-| `GET`  | `/auth/me`       | Get current user info | ✅   |
+| Method | Endpoint                | Description                  | Auth |
+| ------ | ----------------------- | ---------------------------- | ---- |
+| `POST` | `/auth/register`        | Create a new account         | ❌   |
+| `POST` | `/auth/login`           | Login and receive JWT        | ❌   |
+| `GET`  | `/auth/me`              | Get current user info        | ✅   |
+| `GET`  | `/auth/google`          | Initiate Google OAuth        | ❌   |
+| `GET`  | `/auth/google/callback` | Handle Google OAuth callback | ❌   |
 
 ### Decks — `/api/decks`
 
@@ -466,15 +503,17 @@ git push origin feature/ai-image-flashcards
 - **Styling**: Use Tailwind CSS utility classes. Avoid inline `style` props unless for dynamic values (e.g., progress bar widths).
 - **Animations**: Use Framer Motion (`motion.*` components). All animations should have `viewport={{ once: true }}` for scroll-triggered ones.
 - **Pages**: All new pages go inside `src/app/`. Use route groups `(auth)` or `(public)` appropriately.
+- **UI Development**: UIß reference screens are available in the `study-flash-card/screens` directory for accurate component implementation. Always check existing designs before creating new UI components.
 
 #### Backend (`backed/`)
 
 - **Controllers**: Each controller function handles one specific action. Keep it lean — business logic goes in `services/` or `lib/`.
 - **Routes**: Route files only define URL patterns and apply middleware. Logic stays in controllers.
 - **Validation**: Use Zod for all incoming request bodies.
-- **Auth**: Any route requiring a logged-in user must use the `auth.middleware.js` middleware.
+- **Auth**: Any route requiring a logged-in user must use the `auth.middleware.js` middleware. Google OAuth routes use Passport.js strategy.
 - **Prisma**: All DB access goes through the Prisma client. Do not write raw SQL unless absolutely necessary.
 - **AI prompts**: All Gemini and Groq prompts live in `src/lib/llm.js`. Keep them well-commented.
+- **OAuth**: Google OAuth implementation uses Passport.js with proper session management and account linking.
 
 ---
 
@@ -491,15 +530,16 @@ git push origin feature/ai-image-flashcards
 
 ## Features
 
-- ✅ Email/password authentication with JWT
-- ✅ Create flashcard decks from any text/notes using Google Gemini AI
-- ✅ Spaced repetition study sessions (SM-2 algorithm)
-- ✅ AI-powered multiple-choice quiz generation per deck
-- ✅ Manual card creation and editing
-- ✅ Mastery tracking and daily streak counter
-- ✅ Retention percentage ring chart
-- ✅ Animated, responsive landing page
-- ✅ Contribution form with email delivery
+- ✅ **Authentication**: Email/password login + Google OAuth with Passport.js
+- ✅ **AI Generation**: Create flashcard decks from any text/notes using Google Gemini AI
+- ✅ **Spaced Repetition**: Study sessions with SM-2 algorithm for optimal retention
+- ✅ **AI Quizzes**: AI-powered multiple-choice quiz generation per deck
+- ✅ **Manual Cards**: Create and edit flashcards manually
+- ✅ **Progress Tracking**: Mastery tracking and daily streak counter
+- ✅ **Analytics**: Retention percentage ring chart
+- ✅ **Responsive UI**: Animated, responsive landing page
+- ✅ **Contact**: Contribution form with email delivery
+- ✅ **OAuth Integration**: Seamless Google sign-in with account linking
 
 ---
 
